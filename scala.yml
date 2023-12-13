@@ -1,0 +1,30 @@
+id: discarded-future
+language: scala
+rule:
+  all:
+    - kind: call_expression
+    - has:
+        field: function
+        regex: '^Future$'
+    - all:
+      - inside:
+          stopBy: end
+          kind: function_definition
+          has:
+            field: return_type
+            kind: type_identifier
+            regex: '^Unit$'
+          not:
+            has:
+              kind: annotation
+              any:
+                - regex: '^@Test$'
+                - regex: '^@BeforeMethod$'
+      - inside:
+          stopBy: end
+          kind: class_definition
+          has:
+            kind: identifier
+            field: name
+            not:
+              regex: '(Spec|Test)$'
